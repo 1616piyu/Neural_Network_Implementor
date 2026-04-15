@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🤖 AI Chat</h2>
+        <p class="user-name">User: <span id="usernameDisplay"></span></p>
+        <button onclick="clearChat()">🗑 Clear Chat</button>
+    </div>
+
+    <!-- Main Chat Area -->
+    <div class="main">
+
+        <div class="header">AI Assistant</div>
+
+        <div id="chatbox" class="chatbox"></div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">➤</button>
+            <input type="file" id="pdfFile">
+            <button onclick="uploadPDF()">Upload PDF</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/chat.js"></script>
+
+</body>
+</html>
