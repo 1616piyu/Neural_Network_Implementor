@@ -6,3 +6,4 @@ faiss-cpu
 PyPDF2
 torch
 transformers
+gunicorn==23.0.0
