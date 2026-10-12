@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f8fa">
+    <meta name="description" content="Sign in to Document AI to explore, search, and understand your documents.">
+
+    <title>Sign in — Document AI</title>
+
+    <style>
+        :root {
+            color-scheme: light;
+            --page: #f5f6f8;
+            --surface: #ffffff;
+            --text: #20252e;
+            --muted: #727987;
+            --border: #e4e7ec;
+            --accent: #5856d6;
+            --accent-hover: #4846bd;
+            --input: #ffffff;
+            --soft: #f7f7fb;
+            --shadow: 0 24px 80px rgba(28, 34, 52, .09);
+        }
+
+        html[data-theme="dark"] {
+            color-scheme: dark;
+            --page: #111318;
+            --surface: #191c23;
+            --text: #f0f1f5;
+            --muted: #a1a7b5;
+            --border: #303541;
+            --accent: #8885ff;
+            --accent-hover: #a09eff;
+            --input: #151820;
+            --soft: #20232c;
+            --shadow: 0 24px 80px rgba(0, 0, 0, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            background: var(--page);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+            outline-offset: 2px;
+        }
+
+        .topbar {
+            width: min(100%, 1120px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .brand-mark svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 17px;
+            font-weight: 750;
+            letter-spacing: -.4px;
+            line-height: 1.3;
+        }
+
+        .brand-tagline {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .theme-button {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .theme-button svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .main {
+            flex: 1;
+            display: grid;
+            place-items: center;
+            padding: 38px 0;
+        }
+
+        .auth-layout {
+            width: min(100%, 920px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .intro-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 46px 38px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 15% 10%, rgba(132, 128, 255, .20), transparent 45%),
+                var(--soft);
+            border-right: 1px solid var(--border);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 1.5px;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .intro-panel h1 {
+            max-width: 380px;
+            margin: 20px 0 14px;
+            font-size: clamp(30px, 4vw, 43px);
+            line-height: 1.13;
+            letter-spacing: -1.7px;
+        }
+
+        .intro-copy {
+            max-width: 350px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.85;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 20px;
+            margin-top: 32px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+        }
+
+        .feature-icon {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: var(--surface);
+            color: var(--accent);
+            font-size: 17px;
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 13px;
+        }
+
+        .feature p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .intro-footnote {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .form-panel {
+            padding: 46px 38px;
+        }
+
+        .form-heading h2 {
+            margin: 0 0 8px;
+            font-size: 27px;
+            line-height: 1.3;
+            letter-spacing: -.8px;
+        }
+
+        .form-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin: 28px 0;
+            padding: 4px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--soft);
+        }
+
+        .mode-button {
+            min-height: 40px;
+            border: 0;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .mode-button.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .field input {
+            width: 100%;
+            min-height: 47px;
+            padding: 12px 13px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input);
+            color: var(--text);
+            outline: none;
+            transition: border-color .18s, box-shadow .18s;
+        }
+
+        .field input::placeholder {
+            color: var(--muted);
+            opacity: .8;
+        }
+
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 70px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 11px;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .submit-button {
+            width: 100%;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 7px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background .18s, transform .18s;
+        }
+
+        .submit-button:hover {
+            background: var(--accent-hover);
+        }
+
+        .submit-button:active {
+            transform: translateY(1px);
+        }
+
+        .submit-button:disabled,
+        .guest-button:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+
+        .message {
+            display: none;
+            margin: 18px 0 0;
+            padding: 11px 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .form-privacy {
+            margin: 20px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Guest mode */
+        .guest-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 23px 0 17px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .guest-divider::before,
+        .guest-divider::after {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            content: "";
+        }
+
+        .guest-section {
+            text-align: center;
+        }
+
+        .guest-description {
+            margin: 0 0 12px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .guest-button {
+            width: 100%;
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+            transition: border-color .18s, background .18s;
+        }
+
+        .guest-button:hover {
+            border-color: var(--accent);
+            background: var(--soft);
+        }
+
+        .guest-note {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .guest-message {
+            margin: 10px 0 0;
+            color: #c0392b;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        html[data-theme="dark"] .guest-message {
+            color: #ffaaa3;
+        }
+
+        .bottom-note {
+            width: min(100%, 1120px);
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 18px;
+            }
+
+            .main {
+                padding: 28px 0;
+            }
+
+            .auth-layout {
+                max-width: 480px;
+                grid-template-columns: 1fr;
+                border-radius: 19px;
+            }
+
+            .intro-panel {
+                gap: 20px;
+                padding: 28px;
+                border-right: 0;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .intro-panel h1 {
+                margin-top: 13px;
+                font-size: 30px;
+            }
+
+            .feature-list {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 30px 28px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 12px;
+            }
+
+            .intro-panel,
+            .form-panel {
+                padding: 23px 19px;
+            }
+
+            .brand-tagline {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
+                animation-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="Document AI home">
+            <span class="brand-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 3.5h8l4 4v13H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z" stroke="currentColor"
+                        stroke-width="1.7" stroke-linejoin="round" />
+                    <path d="M14 3.5v4h4M8 12h8M8 15.5h6" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" />
+                </svg>
+            </span>
+            <span>
+                <span class="brand-name">Document AI</span>
+                <span class="brand-tagline">Your knowledge workspace</span>
+            </span>
+        </a>
+
+        <button type="button" id="themeToggle" class="theme-button" aria-label="Switch to dark theme"
+            title="Toggle theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" />
+                <path
+                    d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"
+                    stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+        </button>
+    </header>
+
+    <main class="main">
+        <div class="auth-layout">
+            <section class="intro-panel">
+                <div>
+                    <span class="eyebrow">
+                        <span class="eyebrow-dot"></span>
+                        YOUR DOCUMENTS, UNDERSTOOD
+                    </span>
+
+                    <h1>Make your documents work for you.</h1>
+
+                    <p class="intro-copy">
+                        Bring your files into one workspace. Ask questions,
+                        discover key information, and explore your content
+                        with an AI-powered document assistant.
+                    </p>
+
+                    <div class="feature-list">
+                        <div class="feature">
+                            <span class="feature-icon" aria-hidden="true">⌕</span>
+                            <div>
+                                <strong>Find answers faster</strong>
+                                <p>Ask questions in natural language.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature">
+                            <span class="feature-icon" aria-hidden="true">▤</span>
+                            <div>
+                                <strong>Keep your knowledge together</strong>
+                                <p>Work with your supported PDF and DOCX files.</p>
+                            </div>
+                        </div>
+
+                        <div class="feature">
+                            <span class="feature-icon" aria-hidden="true">✳</span>
+                            <div>
+                                <strong>Explore with context</strong>
+                                <p>Review answers alongside retrieved sources.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="intro-footnote">
+                    A simpler way to explore the information you already have.
+                </p>
+            </section>
+
+            <section class="form-panel" aria-labelledby="formTitle">
+                <div class="form-heading">
+                    <h2 id="formTitle">Welcome back</h2>
+                    <p id="formSubtitle">Sign in to continue to your workspace.</p>
+                </div>
+
+                <div class="mode-switch" role="tablist" aria-label="Account access">
+                    <button type="button" id="loginTab" class="mode-button active" role="tab" aria-selected="true">
+                        Sign in
+                    </button>
+
+                    <button type="button" id="registerTab" class="mode-button" role="tab" aria-selected="false">
+                        Create account
+                    </button>
+                </div>
+
+                <form id="authForm">
+                    <div class="field" id="fullNameField" hidden>
+                        <label for="fullName">Full name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name"
+                            autocomplete="name" minlength="2">
+                    </div>
+
+                    <div class="field">
+                        <label for="username">Email address</label>
+                        <input type="email" id="username" name="email" placeholder="you@example.com"
+                            autocomplete="email" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <div class="password-wrap">
+                            <input type="password" id="password" name="password" placeholder="At least 6 characters"
+                                autocomplete="current-password" minlength="6" required>
+
+                            <button type="button" id="passwordToggle" class="password-toggle"
+                                aria-label="Show password">
+                                Show
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="loginButton" class="submit-button">
+                        <span id="submitLabel">Sign in</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <p id="message" class="message" role="status" aria-live="polite"></p>
+                </form>
+
+                <p class="form-privacy">
+                    Use your registered account to access your workspace.
+                </p>
+
+                <div class="guest-divider" aria-hidden="true">OR</div>
+
+                <div class="guest-section">
+                    <p class="guest-description">
+                        Want to explore before creating an account?
+                    </p>
+
+                    <button type="button" id="guestLoginButton" class="guest-button">
+                        <span aria-hidden="true">✦</span>
+                        <span id="guestButtonLabel">Try as Guest</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+
+                    <p class="guest-note">
+                        Try up to 5 questions. No account required.
+                    </p>
+
+                    <p id="guestLoginMessage" class="guest-message" role="status" aria-live="polite"></p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bottom-note">
+        Document AI · Your knowledge workspace
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+
+    <script>
+        "use strict";
+
+        let authMode = "login";
+
+        function setAuthMode(mode) {
+            authMode = mode === "register" ? "register" : "login";
+
+            const registering = authMode === "register";
+            const title = document.getElementById("formTitle");
+            const subtitle = document.getElementById("formSubtitle");
+            const nameField = document.getElementById("fullNameField");
+            const nameInput = document.getElementById("fullName");
+            const password = document.getElementById("password");
+            const loginTab = document.getElementById("loginTab");
+            const registerTab = document.getElementById("registerTab");
+            const submitLabel = document.getElementById("submitLabel");
+            const message = document.getElementById("message");
+
+            title.textContent = registering
+                ? "Create your account"
+                : "Welcome back";
+
+            subtitle.textContent = registering
+                ? "Create an account to set up your workspace."
+                : "Sign in to continue to your workspace.";
+
+            nameField.hidden = !registering;
+            nameInput.required = registering;
+
+            password.autocomplete = registering
+                ? "new-password"
+                : "current-password";
+
+            loginTab.classList.toggle("active", !registering);
+            registerTab.classList.toggle("active", registering);
+
+            loginTab.setAttribute("aria-selected", String(!registering));
+            registerTab.setAttribute("aria-selected", String(registering));
+
+            submitLabel.textContent = registering
+                ? "Create account"
+                : "Sign in";
+
+            message.style.display = "none";
+            message.textContent = "";
+        }
+
+        window.setAuthMode = setAuthMode;
+
+        document.getElementById("loginTab").addEventListener("click", () => {
+            setAuthMode("login");
+        });
+
+        document.getElementById("registerTab").addEventListener("click", () => {
+            setAuthMode("register");
+        });
+
+        document.getElementById("authForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            if (authMode === "register") {
+                register();
+            } else {
+                login();
+            }
+        });
+
+        document.getElementById("passwordToggle").addEventListener("click", () => {
+            const password = document.getElementById("password");
+            const button = document.getElementById("passwordToggle");
+            const showing = password.type === "text";
+
+            password.type = showing ? "password" : "text";
+            button.textContent = showing ? "Show" : "Hide";
+
+            button.setAttribute(
+                "aria-label",
+                showing ? "Show password" : "Hide password"
+            );
+        });
+
+        /* Guest session */
+        document.getElementById("guestLoginButton").addEventListener(
+            "click",
+            async () => {
+                const button = document.getElementById("guestLoginButton");
+                const label = document.getElementById("guestButtonLabel");
+                const message = document.getElementById("guestLoginMessage");
+
+                button.disabled = true;
+                label.textContent = "Starting guest session...";
+                message.textContent = "";
+
+                try {
+                    const response = await fetch("/guest", {
+                        method: "POST",
+                        credentials: "same-origin",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    });
+
+                    const data = await response.json().catch(() => ({}));
+
+                    if (!response.ok || data.success !== true) {
+                        throw new Error(
+                            data.message ||
+                            data.error ||
+                            "Could not start guest mode. Please try again."
+                        );
+                    }
+
+                    window.location.assign("/chat-page");
+                } catch (error) {
+                    message.textContent = error.message;
+                    button.disabled = false;
+                    label.textContent = "Try as Guest";
+                }
+            }
+        );
+
+        function applyLoginTheme(theme) {
+            const selected = theme === "dark" ? "dark" : "light";
+            document.documentElement.dataset.theme = selected;
+
+            const button = document.getElementById("themeToggle");
+            const icon = document.getElementById("themeIcon");
+            const isDark = selected === "dark";
+
+            button.setAttribute(
+                "aria-label",
+                isDark ? "Switch to light theme" : "Switch to dark theme"
+            );
+
+            icon.innerHTML = isDark
+                ? '<path d="M20.5 15.1A8.5 8.5 0 0 1 8.9 3.5 8.5 8.5 0 1 0 20.5 15.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>'
+                : '<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>';
+
+            try {
+                localStorage.setItem("documentAITheme", selected);
+            } catch (error) {
+                console.warn("Theme preference could not be saved.", error);
+            }
+        }
+
+        let initialTheme = "light";
+
+        try {
+            const savedTheme = localStorage.getItem("documentAITheme");
+
+            if (savedTheme === "light" || savedTheme === "dark") {
+                initialTheme = savedTheme;
+            }
+        } catch (error) {
+            console.warn("Saved theme is unavailable.", error);
+        }
+
+        applyLoginTheme(initialTheme);
+
+        document.getElementById("themeToggle").addEventListener("click", () => {
+            const current = document.documentElement.dataset.theme;
+            applyLoginTheme(current === "dark" ? "light" : "dark");
+        });
+    </script>
+</body>
+
+</html>

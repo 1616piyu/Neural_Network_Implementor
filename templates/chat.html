@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f8fa">
+    <meta name="description" content="Document AI helps you ask questions and discover insights across your documents.">
+
+    <title>Document AI — Your knowledge workspace</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="app-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-header">
+                <a href="/chat-page" class="brand" aria-label="Document AI home">
+                    <span class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M6 3.75h8l4 4v12.5H6a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z" stroke="currentColor"
+                                stroke-width="1.7" stroke-linejoin="round" />
+                            <path d="M14 3.75v4h4M8 12h8M8 15.5h6" stroke="currentColor" stroke-width="1.7"
+                                stroke-linecap="round" />
+                        </svg>
+                    </span>
+
+                    <span class="brand-copy">
+                        <strong>Document AI</strong>
+                        <span>Your knowledge workspace</span>
+                    </span>
+                </a>
+
+                <button type="button" id="themeToggle" class="icon-button theme-toggle"
+                    aria-label="Switch to dark theme" title="Toggle light and dark theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" />
+                        <path
+                            d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"
+                            stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M20.5 15.1A8.5 8.5 0 0 1 8.9 3.5 8.5 8.5 0 1 0 20.5 15.1Z" stroke="currentColor"
+                            stroke-width="1.7" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <button type="button" id="newChatButton" class="new-chat-button" onclick="startNewChat()">
+                <span aria-hidden="true">＋</span>
+                <span>New conversation</span>
+            </button>
+
+            <!-- Document upload -->
+            <section class="upload-section">
+                <div class="sidebar-section-heading">
+                    <span class="section-icon" aria-hidden="true">↥</span>
+                    <h2>Your knowledge base</h2>
+                </div>
+
+                <p class="muted">
+                    Add PDFs or Word files to ask questions about their content.
+                </p>
+
+                <label for="pdfFile" class="upload-dropzone">
+                    <span class="upload-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3"
+                                stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <strong>Choose files to upload</strong>
+                    <span>PDF or DOCX · Multiple files supported</span>
+                </label>
+
+                <input type="file" id="pdfFile"
+                    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    multiple>
+
+                <button id="uploadButton" type="button" class="primary-sidebar-button" onclick="uploadPDF()">
+                    Upload documents
+                </button>
+
+                <p id="uploadStatus" class="status-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <!-- Saved documents -->
+            <section class="documents-section">
+                <div class="section-heading">
+                    <h2>Saved documents</h2>
+                    <button type="button" id="refreshDocuments" class="text-button" title="Refresh documents">
+                        Refresh
+                    </button>
+                </div>
+
+                <div id="documentsList" class="documents-list">
+                    <p class="muted">Loading your documents...</p>
+                </div>
+            </section>
+
+            <div class="sidebar-spacer"></div>
+
+            <footer class="sidebar-footer">
+                <div class="privacy-note">
+                    <span class="privacy-dot" aria-hidden="true"></span>
+                    <span>Your workspace is ready</span>
+                </div>
+
+                <div class="account-card">
+                    <div class="avatar" id="userAvatar" aria-hidden="true">
+                        U
+                    </div>
+
+                    <div class="account-details">
+                        <strong id="profileName">Your account</strong>
+                        <span id="accountStatus">Signed in</span>
+                    </div>
+
+                    <button type="button" id="accountMenuButton" class="icon-button account-menu-button"
+                        aria-label="Account options" title="Account options">
+                        ⋯
+                    </button>
+                </div>
+
+                <div id="accountMenu" class="account-menu" hidden>
+                    <button type="button" id="signOutButton">
+                        Sign out
+                    </button>
+                </div>
+            </footer>
+        </aside>
+
+        <!-- Main workspace -->
+        <main class="chat-panel">
+
+            <header class="chat-header">
+                <div class="chat-header-title">
+                    <span class="workspace-eyebrow">YOUR WORKSPACE</span>
+                    <h1 id="chatTitle">Document Assistant</h1>
+                    <p class="muted">
+                        Explore your documents and get answers grounded in their content.
+                    </p>
+                </div>
+
+                <div class="chat-header-actions">
+                    <span class="status-pill">
+                        <span class="status-pill-dot"></span>
+                        AI assistant
+                    </span>
+
+                    <button type="button" id="clearChatButton" class="secondary-button" onclick="clearChat()">
+                        <span aria-hidden="true">↺</span>
+                        Clear conversation
+                    </button>
+                </div>
+            </header>
+
+            <!-- Conversation -->
+            <section id="chatbox" class="chatbox" aria-live="polite" aria-label="Conversation">
+
+                <div class="welcome-message">
+                    <div class="welcome-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3.5 14.3 9.7 20.5 12l-6.2 2.3L12 20.5l-2.3-6.2L3.5 12l6.2-2.3L12 3.5Z"
+                                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+
+                    <p class="welcome-eyebrow">WELCOME TO DOCUMENT AI</p>
+                    <h2>What would you like to discover?</h2>
+                    <p class="welcome-description">
+                        Ask a question, explore a document, or connect the dots
+                        across your knowledge base.
+                    </p>
+
+                    <div class="suggestion-grid">
+                        <button type="button" class="suggestion-card" data-prompt="Summarize my uploaded documents.">
+                            <span class="suggestion-icon" aria-hidden="true">▤</span>
+                            <span>
+                                <strong>Summarize my files</strong>
+                                <small>Get the key takeaways</small>
+                            </span>
+                        </button>
+
+                        <button type="button" class="suggestion-card"
+                            data-prompt="What are the most important details in my documents?">
+                            <span class="suggestion-icon" aria-hidden="true">⌕</span>
+                            <span>
+                                <strong>Find key information</strong>
+                                <small>Surface useful details</small>
+                            </span>
+                        </button>
+
+                        <button type="button" class="suggestion-card"
+                            data-prompt="What topics are covered in my uploaded documents?">
+                            <span class="suggestion-icon" aria-hidden="true">◇</span>
+                            <span>
+                                <strong>Explore a topic</strong>
+                                <small>Understand what's covered</small>
+                            </span>
+                        </button>
+
+                        <button type="button" class="suggestion-card"
+                            data-prompt="Explain a concept from my documents in simple terms.">
+                            <span class="suggestion-icon" aria-hidden="true">✳</span>
+                            <span>
+                                <strong>Explain something</strong>
+                                <small>Make complex ideas clearer</small>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Message composer -->
+            <div class="composer-wrapper">
+                <form id="chatForm" class="chat-input-area">
+                    <label for="userInput" class="sr-only">
+                        Your question
+                    </label>
+
+                    <textarea id="userInput" rows="1" placeholder="Message Document AI..." required></textarea>
+
+                    <div class="composer-toolbar">
+                        <div class="composer-hint">
+                            <span aria-hidden="true">↵</span>
+                            <span>Enter to send · Shift + Enter for a new line</span>
+                        </div>
+
+                        <button type="submit" id="sendButton" aria-label="Send message" title="Send message">
+                            <span>Send</span>
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
+                <p class="disclaimer">
+                    Document AI can make mistakes. Verify important information
+                    against your original files.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
+</body>
+
+</html>
